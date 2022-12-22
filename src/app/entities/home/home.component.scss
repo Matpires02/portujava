@@ -1,0 +1,32 @@
+.hidden{
+  display: none;
+}
+div{
+  background-color: transparent !important;
+}
+iframe{
+  background-color: black !important;
+}
+
+.container{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  .ide-container{
+    width: 100%;
+  }
+  .portugol-container{
+    display: flex;
+    width: 100%;
+    mat-form-field{
+      width: 100%;
+      min-height: 20vh;
+      text-area{
+        resize: vertical;
+      }
+    }
+  }
+}
+

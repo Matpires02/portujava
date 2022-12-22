@@ -48,8 +48,8 @@ $portujava-dark-theme: mat.define-dark-theme((
 .my-dark-theme {
   @include mat.all-component-themes($portujava-dark-theme);
   $my-palette: mat.define-palette(mat.$gray-palette);
-  background: mat.get-color-from-palette($my-palette, 'default');
-  color: mat.get-color-from-palette($my-palette, 'lighter');
+  background: mat.get-color-from-palette($my-palette, 'default') !important;
+  color: mat.get-color-from-palette($my-palette, 'lighter') !important;
 }
 .my-full-dark-theme {
   @include mat.all-component-themes($portujava-dark-theme);
@@ -60,3 +60,9 @@ $portujava-dark-theme: mat.define-dark-theme((
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.embedded{
+  *{
+    background-color: transparent;
+  }
+}

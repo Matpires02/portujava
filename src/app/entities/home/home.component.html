@@ -1,1 +1,24 @@
-home works
+<div class="container">
+  <div class="portugol-container">
+    <mat-form-field [appearance]="'outline'" [hideRequiredMarker]="true" color="accent">
+      <mat-label>Digite seu codigo em portugol</mat-label>
+      <textarea matInput rows="15" [formControl]="portugolForm"></textarea>
+      <mat-error *ngIf="portugolForm.errors?.['required']">Por favor digite o código portugol</mat-error>
+    </mat-form-field>
+  </div>
+  <button mat-flat-button [color]="'primary'" (click)="this.hidden = true;transformData()">Faça a mágica</button>
+  <div class="container">
+    <mat-card>
+      <mat-card-content>
+        <p [innerHTML]="text"></p>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div class="ide-container" *ngIf="!hidden" data-pym-src='https://www.jdoodle.com/plugin' data-language="java"
+       data-version-index="3" data-libs="mavenlib1, mavenlib2" #java>
+    {{text}}
+  </div>
+</div>
+
+<!--<div (click)="hidden = true;text = 'int t = 0;';">Change</div>
+<div (click)="hidden = false; addJsToElement()">open</div>-->

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-sidebar',
@@ -6,11 +6,34 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./sidebar.component.scss']
 })
 export class SidebarComponent implements OnInit {
-  modeSelected: string = 'dark_mode'
+  modeSelected: 'nightlight' | 'light_mode' | 'dark_mode' = 'light_mode'
 
-  constructor() { }
+  constructor(private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
+  }
+
+  changeMode(selectedMode: 'nightlight' | 'light_mode' | 'dark_mode'){
+    switch (selectedMode) {
+      case "dark_mode":
+        document.body.classList.remove('my-dark-theme');
+        document.body.classList.add('my-full-dark-theme');
+/*        const a = document.querySelector('.ide-container')?.getElementsByTagName('iframe')[0] as HTMLIFrameElement;
+        console.log(a?.contentWindow?.document);*/
+        this.modeSelected = 'dark_mode';
+        break;
+      case "light_mode":
+        document.body.classList.remove('my-dark-theme');
+        document.body.classList.remove('my-full-dark-theme');
+        this.modeSelected = 'light_mode';
+        break;
+      case "nightlight":
+        document.body.classList.add('my-dark-theme');
+        document.body.classList.remove('my-full-dark-theme');
+        this.modeSelected = 'nightlight';
+        break;
+    }
+    this.cdr.detectChanges();
   }
 
 }

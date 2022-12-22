@@ -1,8 +1,6 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 import {RouterModule} from "@angular/router";
-import {HomeComponent} from "./home/home.component";
-
 
 
 @NgModule({
@@ -10,12 +8,10 @@ import {HomeComponent} from "./home/home.component";
   imports: [
     CommonModule,
     RouterModule.forChild([
-      {
-        path: '', children: [
-          {path: '', component: HomeComponent}
-        ]
-      }
+      {path: '', loadChildren: () => import('./home/home.module').then(m => m.HomeModule)}
     ]),
   ]
 })
-export class EntitiesModule { }
+
+export class EntitiesModule {
+}

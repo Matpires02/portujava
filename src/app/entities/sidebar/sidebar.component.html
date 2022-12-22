@@ -1,6 +1,26 @@
 <mat-toolbar color="primary" class="sidebar">
-  <h1 class="example-app-name">Responsive App</h1>
-  <button mat-icon-button><mat-icon>{{modeSelected}}</mat-icon></button>
+  <h1 class="example-app-name">PortuJava</h1>
+  <button class="select-colors" [matMenuTriggerFor]="menu" mat-icon-button>
+    <mat-icon *ngIf="modeSelected == 'dark_mode'">dark_mode</mat-icon>
+    <mat-icon *ngIf="modeSelected == 'light_mode'">light_mode</mat-icon>
+    <mat-icon *ngIf="modeSelected == 'nightlight'">nightlight</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="changeMode('dark_mode');">
+      <mat-icon>dark_mode</mat-icon>
+      <span>Modo escuro</span>
+    </button>
+
+    <button mat-menu-item (click)="changeMode('light_mode')">
+      <mat-icon>light_mode</mat-icon>
+      <span>Modo Claro</span>
+    </button>
+
+    <button mat-menu-item (click)="changeMode('nightlight')">
+      <mat-icon>nightlight</mat-icon>
+      <span>Modo pouco escuro</span>
+    </button>
+  </mat-menu>
 </mat-toolbar>
 <div class="sidebar-content">
   <router-outlet></router-outlet>

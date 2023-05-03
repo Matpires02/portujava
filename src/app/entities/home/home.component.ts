@@ -26,6 +26,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
     '}'
     , {nonNullable: true, validators: Validators.required});
 
+  types = ['inteiro', 'real', 'logico', 'cadeia']
+  variaveis: Object = {};
+
   private readonly PORTUGOL_EQUIVALENCE = equivalencePortugolStudio;
 
   constructor() {
@@ -53,6 +56,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   transformData() {
     this.hidden = true;
     this.text = 'import java.util.Scanner;\n';
+    this.variaveis = {};
     setTimeout(()=> {
       this.replaceWords();
     }, 500)
@@ -76,31 +80,80 @@ export class HomeComponent implements OnInit, AfterViewInit {
         spl = spl.replace(')', ' ) ');
         spl = spl.replace('{', ' {');
         spl = spl.replace('}', ' }');
-        const splitLine = spl.split(' ');
-        for (let j = 0; j < splitLine.length; j++) {
-          const word = splitLine[j];
-          // @ts-ignore
-          if (this.PORTUGOL_EQUIVALENCE?.[word]) {
+        spl = spl.replace(',', ' , ');
+
+        const splitLine = spl.trim().split(' ');
+        if (splitLine.includes('leia')){
+            const vars = Object.keys(this.variaveis);
+            splitLine.forEach(word => {
+              if (vars.includes(word)){
+                // @ts-ignore
+                const type = this.variaveis[word];
+                this.setScanner(type, word);
+              }
+            });
+        } else{
+          for (let j = 0; j < splitLine.length; j++) {
+            const word = splitLine[j];
+            if (this.types.includes(word) && !splitLine.includes('para')){
+              this.setVars(spl.replace(',','').split(' '), j);
+            }
             // @ts-ignore
-            this.text += this.PORTUGOL_EQUIVALENCE?.[word] + ' ';
-          } else {
-            this.text += word + ' ';
+            if (this.PORTUGOL_EQUIVALENCE?.[word]) {
+              // @ts-ignore
+              this.text += this.PORTUGOL_EQUIVALENCE?.[word] + ' ';
+            } else {
+              this.text += word + ' ';
+            }
+            if (j === splitLine.length -1){
+              console.log(splitLine)
+              if (word == '{' || word == '}') {
+                this.text += '\n';
+              } else if ((splitLine.length == 1 || splitLine.length==2) && (word == '' || word == ' ')){
+                this.text += '\n';
+              }
+              else{
+                this.text += ';\n';
+              }
+            }
           }
-          if (j === splitLine.length -1){
-            console.log(splitLine)
-            if (word == '{' || word == '}') {
-              this.text += '\n';
-            } else if ((splitLine.length == 1 || splitLine.length==2) && (word == '' || word == ' ')){
-              this.text += '\n';
-            }
-            else{
-              this.text += ';\n';
-            }
+          if (splitLine.join(' ').includes('public static void main')){
+            this.text += 'Scanner scan = new Scanner(System.in); \n';
           }
         }
       }
       this.hidden = false;
       this.addJsToElement();
+    }
+  }
+
+  private setVars(splitLine: string[], startIndex: number) {
+    const type: string = splitLine[startIndex];
+    for (let i = startIndex + 1; i < splitLine.length; i++){
+      if (splitLine[i] != '' && splitLine[i] != ' '){
+        // @ts-ignore
+        this.variaveis = {...this.variaveis, [splitLine[i]]: type }
+      }
+    }
+  }
+
+  private setScanner(type: string, word: string) {
+    switch (type){
+      case 'inteiro':
+        this.text += word + ' = ';
+        this.text += 'scan.nextInt(); \n';
+        break;
+      case 'real':
+        this.text += word + ' = ';
+        this.text += 'scan.nextDouble(); \n';
+        break;
+      case 'cadeia':
+        this.text += word + ' = ';
+        this.text += 'scan.nextLine(); \n';
+        break;
+      default:
+        this.text += '// não é possivel ter essa entrada de dados\n';
+        break;
     }
   }
 }

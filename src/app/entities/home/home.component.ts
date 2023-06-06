@@ -8,7 +8,6 @@ import {FormControl, Validators} from "@angular/forms";
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit, AfterViewInit {
-  //@ViewChild('java') private javaIdeElement!: ElementRef;
   text = 'import java.util.Scanner;\n';
   hidden: boolean = true;
   portugolForm = new FormControl<string>(

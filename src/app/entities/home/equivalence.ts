@@ -22,6 +22,4 @@ export const equivalencePortugolStudio = {
   'procedimento': 'static'
 };
 
-export const equivalenceVisuAlg = {
-
-};
+export const equivalenceVisuAlg = {};

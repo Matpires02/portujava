@@ -63,9 +63,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   private replaceWords() {
-    let value: string | null = this.portugolForm.value//?.split('\n');
+    let value: string | null = this.portugolForm.value
     // substituindo valores
     //const regex = new RegExp('(');
+    value = value.replace(/programa *\n/g, 'programa')
+    value = value.replace(/ +\(\) */g, '()')
+    value = value.replace(/funcao inicio\(\) *\n/g, 'funcao inicio()')
     value = value.replace('funcao inicio()', 'public static void main(String[] args)');
     value = value.replace('limpa()', '');
 
@@ -81,12 +84,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
         spl = spl.replace('{', ' {');
         spl = spl.replace('}', ' }');
         spl = spl.replace(/\,/g, ' , ');
+        spl = spl.replace(/\t/g, '')
 
         let splitLine = spl.trim().split(' ');
         if (splitLine.includes('leia')) {
           const vars = Object.keys(this.variaveis);
           splitLine.forEach(word => {
-            let wordWithoutSpace = word.replace(" ", "");
+            let wordWithoutSpace = word.replace(" ", "").replace(/\t/g, '');
             if (vars.includes(wordWithoutSpace)) {
               // @ts-ignore
               const type = this.variaveis[wordWithoutSpace];
@@ -112,27 +116,47 @@ export class HomeComponent implements OnInit, AfterViewInit {
                 return value1;
               })
             }
+
             // @ts-ignore
             if (this.PORTUGOL_EQUIVALENCE?.[word]) {
               // @ts-ignore
               this.text += this.PORTUGOL_EQUIVALENCE?.[word] + ' ';
             } else {
-              //console.log(word)
               this.text += word + ' ';
             }
+
             if (j === splitLine.length - 1) {
-              //console.log(splitLine)
               if (word == '{' || word == '}') {
-                this.text += '\n';
+                if (val?.length - 1 != i) {
+                  if (val[i + 1] != '{' && (val[i].includes('se') || val[i].includes('senao') || val[i].includes('escolha') || val[i].includes('caso') || val[i].includes('enquanto') || val[i].includes('para') || val[i].includes('faca'))) {
+                    this.text += '\n\t\t'
+                  } else {
+                    this.text += '\n';
+                  }
+                } else {
+                  this.text += '\n';
+                }
+
               } else if ((splitLine.length == 1 || splitLine.length == 2) && (word == '' || word == ' ')) {
-                this.text += '\n';
+                this.text += '\n\t';
               } else {
-                this.text += ';\n';
+                if (val[i].includes('public static void main') || (val[i].includes('programa') && splitLine.length == 1)) {
+                  this.text += '\n';
+                } else {
+                  this.text += ';\n\t';
+                }
               }
+              this.text = this.text.replace(' ( ', '(');
+              this.text = this.text.replace(' ) ', ')');
+              this.text = this.text.replace(' {', '{');
+              this.text = this.text.replace(' }', '}');
+              this.text = this.text.replace(/ \; /g, ';');
+              this.text = this.text.replace(/ \;/g, ';');
+              this.text = this.text.replace(/ \, /g, ',');
             }
           }
           if (splitLine.join(' ').includes('public static void main')) {
-            this.text += 'Scanner scan = new Scanner(System.in); \n';
+            this.text += '\tScanner scan = new Scanner(System.in); \n\t';
           }
         }
       }
@@ -145,27 +169,25 @@ export class HomeComponent implements OnInit, AfterViewInit {
     const arrayRegex = new RegExp("\\w+\\[(\\d)+\\]");
     const matrizRegex = new RegExp("\\w+(\\[\\d+\\]){2,}");
 
-    const type: string = splitLine[startIndex];
+    const type: string = splitLine[startIndex].replace(/\t/g, '');
 
     for (let i = startIndex + 1; i < splitLine.length; i++) {
 
       if (splitLine[i] != '' && splitLine[i] != ' ' && splitLine[i] != '$%@#') {
 
-        splitLine[i].replace(" ", '');
-        splitLine[i].replace(",", ' ,');
         //Verificando se é uma matriz
-        if(splitLine[i].match(matrizRegex)){
+        if (splitLine[i].match(matrizRegex)) {
 
           let newString = splitLine[i].slice();
           newString = newString.replace(",", ' ');
           newString = newString.replace(" ", '');
           newString = newString.replace(new RegExp("(\\[\\d+\\]){2,}"), '');
           let brackets = splitLine[i].replace(new RegExp("\\w*"), '').replace(',', '');
-          while (brackets.search(new RegExp('\\d')) != -1){
+          while (brackets.search(new RegExp('\\d')) != -1) {
             brackets = brackets.replace(new RegExp("\\d"), '')
           }
           // @ts-ignore
-          splitLine[i] = newString +' '+brackets+ ' = new ' + this.getJavaType(type) + ' ' + splitLine[i].match(new RegExp("(\\[\\d+\\]){2,}"))[0] + (splitLine[i].includes(',') ? ',' : '');
+          splitLine[i] = newString + ' ' + brackets + ' = new ' + this.getJavaType(type) + ' ' + splitLine[i].match(new RegExp("(\\[\\d+\\]){2,}"))[0] + (splitLine[i].includes(',') ? ',' : '');
           this.variaveis = {...this.variaveis, [newString.replace(',', '')]: type};
         }
         //Verificando se é vetor
@@ -178,13 +200,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
           // @ts-ignore
           splitLine[i] = newString + '[] = new ' + this.getJavaType(type) + "[" + splitLine[i].match("\\d+")[0] + "]" + (splitLine[i].includes(',') ? ',' : '');
           this.variaveis = {...this.variaveis, [newString.replace(',', '')]: type};
-        }
-        else {
+        } else {
           this.variaveis = {...this.variaveis, [splitLine[i].replace(',', '')]: type};
         }
       }
     }
-    console.log(this.variaveis)
     return splitLine
   }
 
@@ -192,18 +212,18 @@ export class HomeComponent implements OnInit, AfterViewInit {
     switch (type) {
       case 'inteiro':
         this.text += word + ' = ';
-        this.text += 'scan.nextInt(); \n';
+        this.text += 'scan.nextInt(); \n\t';
         break;
       case 'real':
         this.text += word + ' = ';
-        this.text += 'scan.nextDouble(); \n';
+        this.text += 'scan.nextDouble(); \n\t';
         break;
       case 'cadeia':
         this.text += word + ' = ';
-        this.text += 'scan.nextLine(); \n';
+        this.text += 'scan.nextLine(); \n\t';
         break;
       default:
-        this.text += '// não é possivel ter essa entrada de dados\n';
+        this.text += '// não é possivel ter essa entrada de dados\n\t';
         break;
     }
   }

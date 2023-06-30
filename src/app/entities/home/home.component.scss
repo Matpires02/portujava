@@ -1,30 +1,59 @@
-.hidden{
+.hidden {
   display: none;
 }
-div{
+
+div {
   background-color: transparent !important;
 }
-iframe{
+
+iframe {
   background-color: black !important;
 }
 
-.container{
+.container {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 10px;
-  .ide-container{
+
+  .ide-container {
     width: 100%;
   }
-  .portugol-container{
+
+  .portugol-container {
     display: flex;
     width: 100%;
-    mat-form-field{
+
+    mat-form-field {
       width: 100%;
       min-height: 20vh;
-      text-area{
+
+      text-area {
         resize: vertical;
+      }
+    }
+  }
+
+  .buttons-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    button {
+      width: 183px;
+      margin-bottom: .5rem;
+    }
+
+    @media screen and (min-width: 768px) {
+      flex-direction: row;
+
+      button{
+        margin-bottom: 0;
+        &:not(:first-child) {
+          margin-left: .5rem;
+        }
       }
     }
   }

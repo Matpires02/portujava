@@ -8,18 +8,19 @@ import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 export class SidebarComponent implements OnInit {
   modeSelected: 'nightlight' | 'light_mode' | 'dark_mode' = 'light_mode'
 
-  constructor(private cdr: ChangeDetectorRef) { }
+  constructor(private cdr: ChangeDetectorRef) {
+  }
 
   ngOnInit(): void {
   }
 
-  changeMode(selectedMode: 'nightlight' | 'light_mode' | 'dark_mode'){
+  changeMode(selectedMode: 'nightlight' | 'light_mode' | 'dark_mode') {
     switch (selectedMode) {
       case "dark_mode":
         document.body.classList.remove('my-dark-theme');
         document.body.classList.add('my-full-dark-theme');
-/*        const a = document.querySelector('.ide-container')?.getElementsByTagName('iframe')[0] as HTMLIFrameElement;
-        console.log(a?.contentWindow?.document);*/
+        /*        const a = document.querySelector('.ide-container')?.getElementsByTagName('iframe')[0] as HTMLIFrameElement;
+                console.log(a?.contentWindow?.document);*/
         this.modeSelected = 'dark_mode';
         break;
       case "light_mode":

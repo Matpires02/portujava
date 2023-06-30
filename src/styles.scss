@@ -14,8 +14,6 @@
 $portujava-primary: mat.define-palette(mat.$deep-orange-palette);
 $portujava-accent: mat.define-palette(mat.$blue-palette, A200, A100, A400);
 
-$portujava-dark-primary: mat.define-palette(mat.$deep-orange-palette);
-
 // The warn palette is optional (defaults to red).
 $portujava-warn: mat.define-palette(mat.$red-palette);
 
@@ -29,14 +27,6 @@ $portujava-theme: mat.define-light-theme((
   )
 ));
 
-$portujava-dark-theme: mat.define-dark-theme((
-  color: (
-    primary: $portujava-dark-primary,
-    accent: $portujava-accent,
-    warn: $portujava-warn,
-  )
-));
-
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
@@ -45,14 +35,14 @@ $portujava-dark-theme: mat.define-dark-theme((
 /* You can add global styles to this file, and also import other style files */
 
 .my-dark-theme {
-  @include mat.all-component-themes($portujava-dark-theme);
+  @include mat.all-component-themes($portujava-theme);
   $my-palette: mat.define-palette(mat.$gray-palette);
   background: mat.get-color-from-palette($my-palette, 'default') !important;
   color: mat.get-color-from-palette($my-palette, 'lighter') !important;
 }
 
 .my-full-dark-theme {
-  @include mat.all-component-themes($portujava-dark-theme);
+  @include mat.all-component-themes($portujava-theme);
   $my-palette: mat.define-palette(mat.$blue-gray-palette);
   background: mat.get-color-from-palette($my-palette, 'lighter-contrast');
   color: mat.get-color-from-palette($my-palette, 'lighter');

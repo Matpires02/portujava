@@ -50,8 +50,9 @@ iframe {
     @media screen and (min-width: 768px) {
       flex-direction: row;
 
-      button{
+      button {
         margin-bottom: 0;
+
         &:not(:first-child) {
           margin-left: .5rem;
         }

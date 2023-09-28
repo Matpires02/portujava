@@ -1,11 +1,11 @@
 <div class="my-container">
   <h1
-    class="title"
     [innerHTML]="
       selectedPortugolType === PORTUGOL_TYPE.PORTUGOL_STUDIO
         ? 'Portugol Studio para Java'
         : 'Portugol VisuAlg para Java'
     "
+    class="title"
   ></h1>
   <div class="portugol-container mt-3">
     <mat-form-field
@@ -16,7 +16,8 @@
       <mat-label>Digite seu codigo em portugol</mat-label>
       <textarea [formControl]="portugolForm" matInput rows="15"></textarea>
       <mat-error *ngIf="portugolForm.errors?.['required']"
-        >Por favor digite um código em portugol</mat-error
+      >Por favor digite um código em portugol
+      </mat-error
       >
     </mat-form-field>
   </div>

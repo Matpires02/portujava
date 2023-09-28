@@ -55,7 +55,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     'fimescolha\n\n' +
     'var i:inteiro\n' +
     'i <- 2\n' +
-    ''+
+    '' +
     'enquanto i > 1 e i < 2 faca\n' +
     'escreva("oi")\n' +
     '' +
@@ -482,7 +482,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
               linha.replace('var', '').replace(/,/g, '$%@#').replace(':', ' ').split(' ').reverse(),
               1
             );
-             console.debug(this.variaveis, replacedArrayVars)
+            console.debug(this.variaveis, replacedArrayVars)
             palavras = palavras.join(' ').split(':').join(' ').split(' ').reverse().map((value1, index) => {
               if (replacedArrayVars[index] != '$%@#') {
                 return replacedArrayVars[index];
@@ -535,7 +535,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
           }
 
           // @ts-ignore
-          if (this.VISUALG_EQUIVALENCE?.[palavra] && !(palavras.includes('escreva') && palavra !== 'escreva' &&(palavra === 'e' || this.VISUALG_EQUIVALENCE?.[palavra]))) {
+          if (this.VISUALG_EQUIVALENCE?.[palavra] && !(palavras.includes('escreva') && palavra !== 'escreva' && (palavra === 'e' || this.VISUALG_EQUIVALENCE?.[palavra]))) {
             // @ts-ignore
             this.text += this.VISUALG_EQUIVALENCE[palavra] + '';
           } else {
@@ -575,9 +575,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
               ) {
                 this.text += '\n';
               } else {
-                if ((linha.includes('escolha') || linha.includes("caso")) && !linha.includes('escreva')){
+                if ((linha.includes('escolha') || linha.includes("caso")) && !linha.includes('escreva')) {
                   this.text += '\n\t\t'
-                }else if ((linha.includes('se') && linha.includes('entao')) ||
+                } else if ((linha.includes('se') && linha.includes('entao')) ||
                   linha.includes('fimse') ||
                   linha.includes('senao') || linha.includes('faca')) {
                   this.text += linha.includes('fimse') ? '\n\t' : '\n\t\t';

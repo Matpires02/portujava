@@ -1,27 +1,51 @@
-<mat-toolbar class="sidebar" color="primary">
-  <h1 class="example-app-name">PortuJava</h1>
-  <button [matMenuTriggerFor]="menu" class="select-colors" mat-icon-button>
-    <mat-icon *ngIf="modeSelected == 'dark_mode'">dark_mode</mat-icon>
-    <mat-icon *ngIf="modeSelected == 'light_mode'">light_mode</mat-icon>
-    <mat-icon *ngIf="modeSelected == 'nightlight'">nightlight</mat-icon>
-  </button>
-  <mat-menu #menu="matMenu">
-    <button (click)="changeMode('dark_mode');" mat-menu-item>
-      <mat-icon>dark_mode</mat-icon>
-      <span>Modo escuro</span>
+<nav class="navbar navbar-expand-lg text-light" data-bs-theme="dark">
+  <div class="container-xxl bd-gutter flex-wrap flex-lg-nowrap">
+    <div class="navbar-brand">PortuJava</div>
+    <button
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+      class="navbar-toggler"
+      data-bs-target="#navbarSupportedContent"
+      data-bs-toggle="collapse"
+      type="button"
+    >
+      <span class="navbar-toggler-icon"></span>
     </button>
-
-    <button (click)="changeMode('light_mode')" mat-menu-item>
-      <mat-icon>light_mode</mat-icon>
-      <span>Modo Claro</span>
-    </button>
-
-    <button (click)="changeMode('nightlight')" mat-menu-item>
-      <mat-icon>nightlight</mat-icon>
-      <span>Modo pouco escuro</span>
-    </button>
-  </mat-menu>
-</mat-toolbar>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav justify-content-center me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a [routerLinkActiveOptions]="{exact: true}" class="nav-link" routerLink="/" routerLinkActive="active"
+          >Portugol Studio</a>
+        </li>
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="/visuAlg"
+            routerLinkActive="active"
+          >VisuAlg</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav flex-row flex-wrap ms-md-auto">
+        <li class="nav-item mx-auto mx-lg-0">
+          <a
+            (click)="
+            $event.preventDefault();
+              changeMode(
+                modeSelected == 'dark_mode' ? 'light_mode' : 'dark_mode'
+              )
+            "
+            class="select-colors nav-link"
+            href=""
+          >
+            <mat-icon *ngIf="modeSelected == 'dark_mode'">dark_mode</mat-icon>
+            <mat-icon *ngIf="modeSelected == 'light_mode'">light_mode</mat-icon>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
 <div class="sidebar-content">
   <router-outlet></router-outlet>
 </div>

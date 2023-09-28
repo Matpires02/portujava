@@ -10,7 +10,7 @@ iframe {
   background-color: black !important;
 }
 
-.container {
+.my-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -40,6 +40,7 @@ iframe {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-bottom: .5rem;
 
     button {
       width: 183px;

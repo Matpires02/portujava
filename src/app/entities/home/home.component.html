@@ -1,22 +1,50 @@
-<div class="container">
-  <div class="portugol-container">
-    <mat-form-field [appearance]="'outline'" [hideRequiredMarker]="true" color="accent">
+<div class="my-container">
+  <h1
+    class="title"
+    [innerHTML]="
+      selectedPortugolType === PORTUGOL_TYPE.PORTUGOL_STUDIO
+        ? 'Portugol Studio para Java'
+        : 'Portugol VisuAlg para Java'
+    "
+  ></h1>
+  <div class="portugol-container mt-3">
+    <mat-form-field
+      [appearance]="'outline'"
+      [hideRequiredMarker]="true"
+      color="accent"
+    >
       <mat-label>Digite seu codigo em portugol</mat-label>
       <textarea [formControl]="portugolForm" matInput rows="15"></textarea>
-      <mat-error *ngIf="portugolForm.errors?.['required']">Por favor digite um código em portugol</mat-error>
+      <mat-error *ngIf="portugolForm.errors?.['required']"
+        >Por favor digite um código em portugol</mat-error
+      >
     </mat-form-field>
   </div>
   <div class="buttons-container">
-    <button (click)="toggleJavaCode()" [color]="'primary'" mat-flat-button>Transforme meu código
+    <button (click)="toggleJavaCode()" [color]="'primary'" mat-flat-button>
+      Transformar
     </button>
-    <button (click)="downloadCode()" [disabled]='hiddenJavaPlugin' color="accent" mat-flat-button>Baixar código java
+    <button
+      (click)="downloadCode()"
+      [disabled]="hiddenJavaPlugin"
+      color="accent"
+      mat-flat-button
+    >
+      Baixar código java
     </button>
   </div>
 
+  <p>{{text}}</p>
 
-  <div #java *ngIf="!hiddenJavaPlugin" class="ide-container"
-       data-language="java"
-       data-libs="mavenlib1, mavenlib2" data-pym-src='https://www.jdoodle.com/plugin' data-version-index="3">
-    {{text}}
+  <div
+    #java
+    *ngIf="!hiddenJavaPlugin"
+    class="ide-container"
+    data-language="java"
+    data-libs="mavenlib1, mavenlib2"
+    data-pym-src="https://www.jdoodle.com/plugin"
+    data-version-index="3"
+  >
+    {{ text }}
   </div>
 </div>

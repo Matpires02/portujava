@@ -85,7 +85,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.portugolForm.setValue(this.codigoTesteVisualg);
+    /*this.portugolForm.setValue(this.codigoTesteVisualg);*/
   }
 
   ngAfterViewInit() {

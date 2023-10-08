@@ -182,7 +182,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         //Separando a linha por cada palavra
         let splitLine = spl.trim().split(' ');
         //Verificando se a palavra é um comando de entrada para fazer as sbstituições necessárias
-        if (splitLine.includes('leia')) {
+        if (splitLine.includes('leia') || splitLine.includes("LEIA") || splitLine.includes("Leia")) {
           const vars = Object.keys(this.variaveis);
           splitLine.forEach((word) => {
             let wordWithoutSpace = word.replace(' ', '').replace(/\t/g, '');
@@ -200,7 +200,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
                 .replace(new RegExp('(\\[\\d+\\])+'), '')
                 .replace(',', '');
               // @ts-ignore
-              const type = this.variaveis[varNameWithoutBraketsAndNumbers];
+              const type = this.variaveis[varNameWithoutBraketsAndNumbers]?.toLowerCase();
               this.setScanner(type, word);
             }
           });
@@ -208,7 +208,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
           // Reconhecendo um atribuição de variável e substituindo os termos
           for (let j = 0; j < splitLine.length; j++) {
             let word = splitLine[j];
-            if (this.types.includes(word) && !splitLine.includes('para')) {
+            if (this.types.includes(word.toLowerCase()) && !splitLine.includes('para')) {
               let replacedArrayVars = this.setVars(
                 spl.replace(',', '$%@#').split(' '),
                 j
@@ -223,9 +223,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
             //Verificando se a palavra existe na lista de equivalencias
             // @ts-ignore
-            if (this.PORTUGOL_EQUIVALENCE?.[word]) {
+            if (this.PORTUGOL_EQUIVALENCE?.[word.toLowerCase()]) {
               // @ts-ignore
-              this.text += this.PORTUGOL_EQUIVALENCE?.[word] + ' ';
+              this.text += this.PORTUGOL_EQUIVALENCE?.[word.toLowerCase()] + ' ';
             } else {
               this.text += word + ' ';
             }
@@ -234,15 +234,16 @@ export class HomeComponent implements OnInit, AfterViewInit {
             if (j === splitLine.length - 1) {
               if (word == '{' || word == '}') {
                 if (val?.length - 1 != i) {
+                  val.map(v => v.toLowerCase())
                   if (
                     val[i + 1] != '{' &&
-                    (val[i].includes('se') ||
-                      val[i].includes('senao') ||
-                      val[i].includes('escolha') ||
-                      val[i].includes('caso') ||
-                      val[i].includes('enquanto') ||
-                      val[i].includes('para') ||
-                      val[i].includes('faca'))
+                    (val[i].toLowerCase().includes('se') ||
+                      val[i].toLowerCase().includes('senao') ||
+                      val[i].toLowerCase().includes('escolha') ||
+                      val[i].toLowerCase().includes('caso') ||
+                      val[i].toLowerCase().includes('enquanto') ||
+                      val[i].toLowerCase().includes('para') ||
+                      val[i].toLowerCase().includes('faca'))
                   ) {
                     this.text += '\n\t\t';
                   } else {
@@ -327,7 +328,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
             (splitLine[i].includes(',') ? ',' : '');
           this.variaveis = {
             ...this.variaveis,
-            [newString.replace(',', '')]: type,
+            [newString.replace(',', '')]: type.toLowerCase(),
           };
         }
         //Verificando se é vetor
@@ -369,7 +370,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
    * @private
    */
   private setScanner(type: string, varName: string) {
-    switch (type) {
+    switch (type.toLowerCase()) {
       case 'inteiro':
         this.text += varName + ' = ';
         this.text += 'scan.nextInt(); \n\t';
@@ -398,7 +399,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
    * @private
    */
   private getJavaType(type: string): string {
-    switch (type) {
+    switch (type.toLowerCase()) {
       case 'inteiro':
         return 'int';
       case 'real':
@@ -436,21 +437,21 @@ export class HomeComponent implements OnInit, AfterViewInit {
         let palavras = linha.trim().split(' ');
 
         // Verificando se alguumas das palavra é um comando de entrada
-        if (palavras.includes('leia')) {
+        if (palavras.includes('leia') || palavras.includes("LEIA") || palavras.includes("Leia")) {
           const vars = Object.keys(this.variaveis);
           palavras.forEach((word) => {
-            let wordWithoutSpace = word.replace(' ', '').replace(/\t/g, '');
+            let wordWithoutSpace = word.toLowerCase().replace(' ', '').replace(/\t/g, '');
             //Verificando se é uma variavel de tipo simples
             if (vars.includes(wordWithoutSpace)) {
               // @ts-ignore
-              const type = this.variaveis[wordWithoutSpace];
+              const type = this.variaveis[wordWithoutSpace]?.toLowerCase();
               this.setScanner(type, wordWithoutSpace);
             }
             // Verificando se a palavra é um array ou matriz
             else if (
-              vars.includes(word.replace(new RegExp('(\\[\\d+\\])+'), ''))
+              vars.includes(word.toLowerCase().replace(new RegExp('(\\[\\d+\\])+'), ''))
             ) {
-              const varNameWithoutBraketsAndNumbers = word
+              const varNameWithoutBraketsAndNumbers = word.toLowerCase()
                 .replace(new RegExp('(\\[\\d+\\])+'), '')
                 .replace(',', '');
               // @ts-ignore
@@ -461,7 +462,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
           continue
         }
 
-        if (palavras.includes('algoritmo') && i === 0) {
+        if ((palavras.map(p => p.toLowerCase()).includes('algoritmo')) && i === 0) {
           const p = palavras[0] as 'algoritmo';
           palavras = palavras.filter(p => p !== '"' && p !== ' ' && p !== '');
           this.text += this.VISUALG_EQUIVALENCE?.[p] + ' ' + palavras[1] + ' {\n\t' +
@@ -472,72 +473,108 @@ export class HomeComponent implements OnInit, AfterViewInit {
         }
 
         // identificando se a linha é o começo da definção de variável
-        if (palavras.includes('var') && palavras.length <= 1) {
-          proximaLinhaDefinicaoVariavel = true;
-          continue;
-        } else if (palavras.includes('var')) {
-          console.debug(palavras)
-          if (!palavras.includes('para')) {
-            let replacedArrayVars = this.setVars(
-              linha.replace('var', '').replace(/,/g, '$%@#').replace(':', ' ').split(' ').reverse(),
-              1
-            );
-            console.debug(this.variaveis, replacedArrayVars)
-            palavras = palavras.join(' ').split(':').join(' ').split(' ').reverse().map((value1, index) => {
-              if (replacedArrayVars[index] != '$%@#') {
-                return replacedArrayVars[index];
-              }
-              return value1;
-            });
-          }
+        /* if (palavras.map(p => p.toLowerCase()).includes('var') && palavras.length <= 1) {
+           proximaLinhaDefinicaoVariavel = true;
+           continue;
+         } else if (palavras.map(p => p.toLowerCase()).includes('var')) {
+           console.debug(palavras)
+           if (!palavras.map(p => p.toLowerCase()).includes('para')) {
+             let replacedArrayVars = this.setVars(
+               linha.toLowerCase().replace('var', '').replace(/,/g, '$%@#').replace(/:/g, ' ').split(' ').reverse(),
+               1
+             );
+             console.debug(this.variaveis, replacedArrayVars)
+             palavras = palavras.map(p => p.toLowerCase()).join(' ').split(':').join(' ').split(' ').reverse().map((value1, index) => {
+               if (replacedArrayVars[index] != '$%@#') {
+                 return replacedArrayVars[index];
+               }
+               return value1 != ',' ? value1 : ';';
+             });
+           }
+         }
+
+         if (proximaLinhaDefinicaoVariavel) {
+           if (this.types.includes(palavras[palavras.length - 1].toLowerCase()) && !palavras.includes('para')) {
+             let replacedArrayVars = this.setVars(
+               linha.toLowerCase().replace(/,/g, '$%@#').replace(/:/g, ' ').split(' ').reverse(),
+               0
+             );
+
+             palavras = palavras.map(p => p.toLowerCase()).join(' ').replace(/:/g, ' ').split(' ').reverse().map((value1, index) => {
+               if (replacedArrayVars[index] != '$%@#') {
+                 return replacedArrayVars[index];
+               }
+               return value1 != ',' ? value1 : ';';
+             });
+           }
+           proximaLinhaDefinicaoVariavel = false;
+         }*/
+
+        if (palavras.map(p => p.toLowerCase()).includes("var") && !palavras.map(p => p.toLowerCase()).includes("escreva") && !palavras.map(p => p.toLowerCase()).includes('escreval')) {
+          palavras[palavras.map(p => p.toLowerCase()).indexOf("var")] = ''
         }
 
-        if (proximaLinhaDefinicaoVariavel) {
-          if (this.types.includes(palavras[palavras.length - 1]) && !palavras.includes('para')) {
-            let replacedArrayVars = this.setVars(
-              linha.replace(/,/g, '$%@#').replace(':', ' ').split(' ').reverse(),
-              0
-            );
+        if (!palavras.map(p => p.toLowerCase()).includes("escreva") && !palavras.map(p => p.toLowerCase()).includes('escreval')) {
+          this.types.forEach(type => {
+            if (palavras.map(p => p.toLowerCase()).includes(type)) {
+              const typeIndex = palavras.map(p => p.toLowerCase()).indexOf(type);
+              let replacedArrayVars = this.setVars(
+                linha.toLowerCase().replace(/,/g, '$%@#').replace(/:/g, ' ').split(' ').reverse(),
+                0
+              );
 
-            palavras = palavras.join(' ').replace(':', ' ').split(' ').reverse().map((value1, index) => {
-              if (replacedArrayVars[index] != '$%@#') {
-                return replacedArrayVars[index];
-              }
-              return value1;
-            });
-          }
-          proximaLinhaDefinicaoVariavel = false;
+              palavras = palavras.map(p => p.toLowerCase()).join(' ').replace(/:/g, ' ').split(' ').reverse().map((value1, index) => {
+                if (replacedArrayVars[index] != '$%@#') {
+                  return replacedArrayVars[index];
+                }
+                return value1 != ',' ? value1 : ';';
+              });
+            }
+          });
         }
 
-        if (palavras.includes('escreva')) {
+
+        if (palavras.map(p => p.toLowerCase()).includes("para") && !palavras.map(p => p.toLowerCase()).includes("escreva") && !palavras.map(p => p.toLowerCase()).includes('escreval')) {
+          //const indexDe= palavras.map(p => p.toLowerCase()).indexOf("de");
+          const indexAte = palavras.map(p => p.toLowerCase()).indexOf("ate");
+          const indexPasso = palavras.map(p => p.toLowerCase()).indexOf("passo");
+          const indexPara = palavras.map(p => p.toLowerCase()).indexOf("para");
+          // presumindo que a primeira palavra após para será uma variavel
+          //palavras[indexDe] = palavras.map(p => p.toLowerCase())[indexDe] = "=";
+          palavras[indexAte] = palavras.map(p => p.toLowerCase())[indexAte] = "; " + palavras[indexPara + 1] + " <= ";
+          palavras[indexPasso] = palavras.map(p => p.toLowerCase())[indexPasso] = "; " + palavras[indexPara + 1] + " += ";
+        }
+
+        if (palavras.map(p => p.toLowerCase()).includes('escreva') || palavras.map(p => p.toLowerCase()).includes('escreval')) {
           palavras = palavras.join(' ').replace(/,/g, '+').split(' ');
         }
 
-        if (palavras.includes('escolha') && !palavras.includes('escreva')) {
+        if (palavras.map(p => p.toLowerCase()).includes('escolha') && !palavras.includes('escreva')) {
           palavras.splice(palavras.length, 0, '){ ')
         }
 
-        if ((palavras.includes('caso') || palavras.includes('outrocaso')) && !palavras.includes('escreva')) {
+        if ((palavras.map(p => p.toLowerCase()).includes('caso') || palavras.includes('outrocaso')) && !palavras.map(p => p.toLowerCase()).includes('escreva') && !palavras.map(p => p.toLowerCase()).includes('escreval')) {
           palavras.splice(palavras.length, 0, ...[':', '\n\t'])
         }
 
         for (let j = 0; j < palavras.length; j++) {
           const palavra = palavras[j];
 
-          if (palavra === 'inicio' && palavras.length <= 2) {
+          if (palavra.toLowerCase() === 'inicio' && palavras.length <= 2) {
             break;
           }
 
 
-          if (palavra === 'fim_algoritmo' || palavra === 'fimfuncao') {
-            this.text += this.VISUALG_EQUIVALENCE?.[palavra] + '\n';
+          if (palavra.toLowerCase() === 'fim_algoritmo' || palavra === 'fimfuncao') {
+            // @ts-ignore
+            this.text += this.VISUALG_EQUIVALENCE?.[palavra.toLowerCase()] + '\n';
             this.bracketsOpen -= 1;
           }
 
           // @ts-ignore
-          if (this.VISUALG_EQUIVALENCE?.[palavra] && !(palavras.includes('escreva') && palavra !== 'escreva' && (palavra === 'e' || this.VISUALG_EQUIVALENCE?.[palavra]))) {
+          if (this.VISUALG_EQUIVALENCE?.[palavra.toLowerCase()] && !(palavras.map(p => p.toLowerCase()).includes('escreva') && palavra.toLowerCase() !== 'escreva' && (palavra.toLowerCase() === 'e' || this.VISUALG_EQUIVALENCE?.[palavra.toLowerCase()]))) {
             // @ts-ignore
-            this.text += this.VISUALG_EQUIVALENCE[palavra] + '';
+            this.text += this.VISUALG_EQUIVALENCE[palavra.toLowerCase()] + '';
           } else {
             this.text += palavra + ' ';
           }
@@ -548,13 +585,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
               if (linhas?.length - 1 != i) {
                 if (
                   linhas[i + 1] != '{' &&
-                  (linhas[i].includes('se') ||
-                    linhas[i].includes('senao') ||
-                    linhas[i].includes('escolha') ||
-                    linhas[i].includes('caso') ||
-                    linhas[i].includes('enquanto') ||
-                    linhas[i].includes('para') ||
-                    linhas[i].includes('faca'))
+                  (linhas[i].toLowerCase().includes('se') ||
+                    linhas[i].toLowerCase().includes('senao') ||
+                    linhas[i].toLowerCase().includes('escolha') ||
+                    linhas[i].toLowerCase().includes('caso') ||
+                    linhas[i].toLowerCase().includes('enquanto') ||
+                    linhas[i].toLowerCase().includes('para') ||
+                    linhas[i].toLowerCase().includes('faca'))
                 ) {
                   this.text += '\n\t\t';
                 } else {
@@ -570,19 +607,19 @@ export class HomeComponent implements OnInit, AfterViewInit {
               this.text += '\n\t';
             } else {
               if (
-                linhas[i].includes('public static void main') ||
-                (linhas[i].includes('algoritmo') && palavras.length == 1)
+                linhas[i].toLowerCase().includes('public static void main') ||
+                (linhas[i].toLowerCase().includes('algoritmo') && palavras.length == 1)
               ) {
                 this.text += '\n';
               } else {
-                if ((linha.includes('escolha') || linha.includes("caso")) && !linha.includes('escreva')) {
+                if ((linha.toLowerCase().includes('escolha') || linha.toLowerCase().includes("caso")) && !linha.toLowerCase().includes('escreva')) {
                   this.text += '\n\t\t'
-                } else if ((linha.includes('se') && linha.includes('entao')) ||
-                  linha.includes('fimse') ||
-                  linha.includes('senao') || linha.includes('faca')) {
-                  this.text += linha.includes('fimse') ? '\n\t' : '\n\t\t';
+                } else if ((linha.toLowerCase().includes('se') && linha.toLowerCase().includes('entao')) ||
+                  linha.toLowerCase().includes('fimse') ||
+                  linha.toLowerCase().includes('senao') || linha.toLowerCase().includes('faca')) {
+                  this.text += linha.toLowerCase().includes('fimse') ? '\n\t' : '\n\t\t';
                 } else {
-                  this.text += linha.includes('fimenquanto') ? '\n\t' : ';\n\t';
+                  this.text += linha.toLowerCase().includes('fimenquanto') ? '\n\t' : ';\n\t';
                 }
               }
             }
@@ -599,6 +636,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
           }
         }
       }
+      this.text += '\n}'
       this.hiddenJavaPlugin = false;
       this.addJsToElement();
     }

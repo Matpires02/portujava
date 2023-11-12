@@ -527,7 +527,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
                 if (replacedArrayVars[index] != '$%@#') {
                   return replacedArrayVars[index];
                 }
-                return value1 != ',' ? value1 : ';';
+                return value1 === ',' ? value1 : ';'; // verificar se essa aleração altera matrizes
               });
             }
           });
@@ -636,7 +636,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
           }
         }
       }
-      this.text += '\n}'
+      //this.text += '\n}'
       this.hiddenJavaPlugin = false;
       this.addJsToElement();
     }

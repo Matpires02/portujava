@@ -224,6 +224,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
               });
             }
 
+            if (word.toLowerCase() === 'escreva' && splitLine[j+1] !== '('){
+              this.text += word + ' ';
+              continue;
+            }
+
             //Verificando se a palavra existe na lista de equivalencias
             // @ts-ignore
             if (this.PORTUGOL_EQUIVALENCE?.[word.toLowerCase()]) {
@@ -554,7 +559,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
           palavras[indexPasso] = palavras.map(p => p.toLowerCase())[indexPasso] = "; " + palavras[indexPara + 1] + " += ";
         }
 
-        if (palavras.map(p => p.toLowerCase()).includes('escreva') || palavras.map(p => p.toLowerCase()).includes('escreval')) {
+        if ((palavras.map(p => p.toLowerCase()).includes('escreva')) || palavras.map(p => p.toLowerCase()).includes('escreval')) {
           palavras = palavras.join(' ').replace(/,/g, '+').split(' ');
         }
 
@@ -571,6 +576,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
           if (palavra.toLowerCase() === 'inicio' && palavras.length <= 2) {
             break;
+          }
+
+          if (palavra.toLowerCase() === 'escreva' && palavras[j+1] !== '('){
+            this.text += palavra + ' ';
+            continue;
           }
 
 

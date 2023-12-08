@@ -9,7 +9,7 @@ import {SidebarModule} from "./entities/sidebar/sidebar.module";
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,

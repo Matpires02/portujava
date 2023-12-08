@@ -3,6 +3,8 @@ import {equivalencePortugolStudio, equivalenceVisuAlg} from './equivalence';
 import {FormControl, Validators} from '@angular/forms';
 import {ActivatedRoute} from '@angular/router';
 import {PortugolType} from 'src/app/enums/portugol_type.enum';
+import {MatDialog} from "@angular/material/dialog";
+import {SatisfactionSurveyComponent} from "../satisfaction-survey/satisfaction-survey.component";
 
 @Component({
   selector: 'app-home',
@@ -69,7 +71,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   protected readonly PORTUGOL_TYPE = PortugolType;
   private bracketsOpen: number = 0;
 
-  constructor(private activatedRoute: ActivatedRoute) {
+  constructor(private activatedRoute: ActivatedRoute, private matDialog: MatDialog) {
     const routeSnapshot = this.activatedRoute.snapshot;
     if (routeSnapshot && routeSnapshot.data) {
       if (routeSnapshot.data?.['portugolStudio']) {
@@ -145,7 +147,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Faz toda a lógica de identificar as variaveis e seus tipos e qual termo deve ser substituido conforme a tabela de equivalência
+   * Faz toda a lógica de identificar as variaveis e seus tipos e
+   * qual termo deve ser substituido conforme a tabela de equivalência
    * @private
    */
   private replaceWords() {
@@ -221,6 +224,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
               });
             }
 
+            if (word.toLowerCase() === 'escreva' && splitLine[j+1] !== '('){
+              this.text += word + ' ';
+              continue;
+            }
+
             //Verificando se a palavra existe na lista de equivalencias
             // @ts-ignore
             if (this.PORTUGOL_EQUIVALENCE?.[word.toLowerCase()]) {
@@ -292,7 +300,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
   /**
    * Responsável por gerar o código JAVA para os arrays e matrizes
    * @param splitLine array da linha atual que foi separada por espaços
-   * @param startIndex index de começo da verificação, responsavel por indicar onde está o tipo da variável na linha atual
+   * @param startIndex index de começo da verificação, responsavel por indicar onde está o
+   * tipo da variável na linha atual
    * @private
    */
   private setVars(splitLine: string[], startIndex: number) {
@@ -411,6 +420,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * Faz toda a lógica de identificar as variaveis e seus tipos e
+   * qual termo deve ser substituido conforme a tabela de equivalência
+   * @private
+   */
   private replaceWordsForVisuAlg() {
     let value: string | null = this.portugolForm.value;
     value = value.replace(/algoritmo *\n/g, 'algoritmo');
@@ -527,7 +541,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
                 if (replacedArrayVars[index] != '$%@#') {
                   return replacedArrayVars[index];
                 }
-                return value1 === ',' ? value1 : ';'; // verificar se essa aleração altera matrizes
+                return value1 === ',' ? value1 : ';';  // verificar se essa aleração altera matrizes
               });
             }
           });
@@ -545,7 +559,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
           palavras[indexPasso] = palavras.map(p => p.toLowerCase())[indexPasso] = "; " + palavras[indexPara + 1] + " += ";
         }
 
-        if (palavras.map(p => p.toLowerCase()).includes('escreva') || palavras.map(p => p.toLowerCase()).includes('escreval')) {
+        if ((palavras.map(p => p.toLowerCase()).includes('escreva')) || palavras.map(p => p.toLowerCase()).includes('escreval')) {
           palavras = palavras.join(' ').replace(/,/g, '+').split(' ');
         }
 
@@ -562,6 +576,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
           if (palavra.toLowerCase() === 'inicio' && palavras.length <= 2) {
             break;
+          }
+
+          if (palavra.toLowerCase() === 'escreva' && palavras[j+1] !== '('){
+            this.text += palavra + ' ';
+            continue;
           }
 
 
@@ -640,5 +659,14 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.hiddenJavaPlugin = false;
       this.addJsToElement();
     }
+  }
+
+  showSurvey() {
+    if (this.portugolForm.valid){
+      setTimeout(() => {
+        this.matDialog.open(SatisfactionSurveyComponent);
+      }, 3000);
+    }
+
   }
 }

@@ -1,4 +1,6 @@
 import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {MatDialog} from "@angular/material/dialog";
+import {SatisfactionSurveyComponent} from "../satisfaction-survey/satisfaction-survey.component";
 
 @Component({
   selector: 'app-sidebar',
@@ -8,7 +10,7 @@ import {ChangeDetectorRef, Component, OnInit} from '@angular/core';
 export class SidebarComponent implements OnInit {
   modeSelected: 'nightlight' | 'light_mode' | 'dark_mode' = 'light_mode'
 
-  constructor(private cdr: ChangeDetectorRef) {
+  constructor(private cdr: ChangeDetectorRef, private matDialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -37,4 +39,7 @@ export class SidebarComponent implements OnInit {
     this.cdr.detectChanges();
   }
 
+  openSurvey() {
+    this.matDialog.open(SatisfactionSurveyComponent);
+  }
 }

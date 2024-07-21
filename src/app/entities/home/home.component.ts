@@ -213,7 +213,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
             let word = splitLine[j];
             if (this.types.includes(word.toLowerCase()) && !splitLine.includes('para')) {
               let replacedArrayVars = this.setVars(
-                spl.replace(',', '$%@#').split(' '),
+                spl.trim().replace(',', '$%@#').split(' '),
                 j
               );
               splitLine = splitLine.map((value1, index) => {
@@ -224,7 +224,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
               });
             }
 
-            if (word.toLowerCase() === 'escreva' && splitLine[j+1] !== '('){
+            if (word.toLowerCase() === 'escreva' && (splitLine[j+1] !== '(' && splitLine[j+2] !== '(')){
               this.text += word + ' ';
               continue;
             }
@@ -533,7 +533,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
             if (palavras.map(p => p.toLowerCase()).includes(type)) {
               const typeIndex = palavras.map(p => p.toLowerCase()).indexOf(type);
               let replacedArrayVars = this.setVars(
-                linha.toLowerCase().replace(/,/g, '$%@#').replace(/:/g, ' ').split(' ').reverse(),
+                linha.trim().toLowerCase().replace(/,/g, '$%@#').replace(/:/g, ' ').split(' ').reverse(),
                 0
               );
 
@@ -578,13 +578,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
             break;
           }
 
-          if (palavra.toLowerCase() === 'escreva' && palavras[j+1] !== '('){
+          if (palavra.toLowerCase() === 'escreva' && (palavras[j+1] !== '(' && palavras[j+2] !== '(')){
             this.text += palavra + ' ';
             continue;
           }
 
 
-          if (palavra.toLowerCase() === 'fim_algoritmo' || palavra === 'fimfuncao') {
+          if (palavra.toLowerCase() === 'fim_algoritmo' || palavra === 'fimfuncao' || palavra === 'fimalgoritmo') {
             // @ts-ignore
             this.text += this.VISUALG_EQUIVALENCE?.[palavra.toLowerCase()] + '\n';
             this.bracketsOpen -= 1;

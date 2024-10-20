@@ -3,7 +3,7 @@
 
 @use 'sass:map';
 @use '@angular/material' as mat;
-
+mat.$theme-ignore-duplication-warnings: true;
 // Note: Color palettes are generated from primary: #ff5722
 $_palettes: (
   primary: (

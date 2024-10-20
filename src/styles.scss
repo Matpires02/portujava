@@ -18,7 +18,7 @@ body {
 
 .color-scheme-dark {
   @include mat.core-theme(themes.$dark-theme);
-  //@include mat.all-component-themes(themes.$dark-theme);
+  @include mat.all-component-themes(themes.$dark-theme);
   @include mat.button-theme(themes.$dark-theme);
   background-color: var(--mat-app-background-color);
   color: var(--mat-app-text-color);

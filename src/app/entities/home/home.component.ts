@@ -70,6 +70,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   selectedPortugolType = PortugolType.PORTUGOL_STUDIO;
   protected readonly PORTUGOL_TYPE = PortugolType;
   private bracketsOpen: number = 0;
+  private isOutput: boolean = false;
 
   constructor(private activatedRoute: ActivatedRoute, private matDialog: MatDialog) {
     const routeSnapshot = this.activatedRoute.snapshot;
@@ -224,9 +225,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
               });
             }
 
-            if (word.toLowerCase() === 'escreva' && (splitLine[j+1] !== '(' && splitLine[j+2] !== '(')){
+            if (word.toLowerCase().includes('escreva') && (splitLine[j+1] !== '(' && splitLine[j+2] !== '(')){
               this.text += word + ' ';
               continue;
+            }else {
+              this.isOutput = true;
             }
 
             //Verificando se a palavra existe na lista de equivalencias
@@ -235,7 +238,11 @@ export class HomeComponent implements OnInit, AfterViewInit {
               // @ts-ignore
               this.text += this.PORTUGOL_EQUIVALENCE?.[word.toLowerCase()] + ' ';
             } else {
-              this.text += word + ' ';
+              if (this.isOutput) {
+                this.text += word.replaceAll(',', '+') + ' ';
+              }else {
+                this.text += word + ' ';
+              }
             }
 
             // Verificando se é a  ultima palavra da linha então adiciona-se o ponto caso seja a ultima palavra mas o caractere for um { ouu } somente cria-se uma nova linha
@@ -275,6 +282,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
                   this.text += ';\n\t';
                 }
               }
+              this.isOutput = false;
 
               //Removendo espaços desnecessários para deixar o código mais limpo
               this.text = this.text.replace(' ( ', '(');
@@ -395,6 +403,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
       case 'caractere':
         this.text += varName + ' = ';
         this.text += 'scan.nextLine(); \n\t';
+        break;
+      case 'caracter':
+        this.text += varName + ' = ';
+        this.text += 'scan.next().charAt(0); \n\t';
         break;
       default:
         this.text += '// não é possivel ter essa entrada de dados\n\t';

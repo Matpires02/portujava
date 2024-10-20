@@ -181,6 +181,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         spl = spl.replace('{', ' {');
         spl = spl.replace('}', ' }');
         spl = spl.replace(/\,/g, ' , ');
+        spl = spl.replace(/\:/g, ' :');
         spl = spl.replace(/\t/g, '');
 
         //Separando a linha por cada palavra
@@ -278,6 +279,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
                   (val[i].includes('programa') && splitLine.length == 1)
                 ) {
                   this.text += '\n';
+                } else if (word == ':') {
+                  this.text += '\n';
                 } else {
                   this.text += ';\n\t';
                 }
@@ -292,6 +295,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
               this.text = this.text.replace(/ \; /g, ';');
               this.text = this.text.replace(/ \;/g, ';');
               this.text = this.text.replace(/ \, /g, ',');
+              this.text = this.text.replace(/ \: /g, ':');
+              this.text = this.text.replaceAll(';;', ';');
             }
           }
           // Importando a biblioteca do scanner
@@ -545,7 +550,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
             if (palavras.map(p => p.toLowerCase()).includes(type)) {
               const typeIndex = palavras.map(p => p.toLowerCase()).indexOf(type);
               let replacedArrayVars = this.setVars(
-                linha.trim().toLowerCase().replace(/,/g, '$%@#').replace(/:/g, ' ').split(' ').reverse(),
+                linha.trim().toLowerCase().replace('var', '').replace(/,/g, '$%@#').replace(/:/g, ' ').split(' ').reverse(),
                 0
               );
 
@@ -581,6 +586,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
         if ((palavras.map(p => p.toLowerCase()).includes('caso') || palavras.includes('outrocaso')) && !palavras.map(p => p.toLowerCase()).includes('escreva') && !palavras.map(p => p.toLowerCase()).includes('escreval')) {
           palavras.splice(palavras.length, 0, ...[':', '\n\t'])
+          palavras = palavras.map(p => p.replaceAll(',', ':\n case'))
         }
 
         for (let j = 0; j < palavras.length; j++) {
@@ -663,6 +669,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
             this.text = this.text.replace(/ \; /g, ';');
             this.text = this.text.replace(/ \;/g, ';');
             this.text = this.text.replace(/ \, /g, ',');
+            this.text = this.text.replaceAll(/ \" /g, '"');
             //this.text = this.text.replace(/( )*/g, '');
           }
         }

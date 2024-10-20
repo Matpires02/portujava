@@ -16,7 +16,7 @@ export const equivalencePortugolStudio = {
   senao: 'else',
   escolha: 'switch',
   caso: 'case',
-  pare: 'break',
+  pare: 'break;',
   enquanto: 'while',
   para: 'for',
   faca: 'do',

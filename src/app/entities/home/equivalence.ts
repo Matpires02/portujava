@@ -31,6 +31,7 @@ export const equivalenceVisuAlg = {
   real: 'double',
   logico: 'boolean',
   caractere: 'String',
+  caracter: 'String',
   escreva: 'System.out.println',
   escreval: 'System.out.println',
   '<-': '=',

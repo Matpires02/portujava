@@ -18,7 +18,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     nonNullable: true,
     validators: Validators.required,
   });
-  private types = ['inteiro', 'real', 'logico', 'cadeia', 'caractere'];
+  private types = ['inteiro', 'real', 'logico', 'cadeia', 'caractere', 'caracter'];
   private variaveis: Object = {};
   private codigoDeTeste =
     'programa {\n' +

@@ -320,6 +320,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
    * @private
    */
   private setVars(splitLine: string[], startIndex: number) {
+    console.error(splitLine.slice())
     const arrayRegex = new RegExp('\\w+\\[(\\d)+\\]');
     const matrizRegex = new RegExp('\\w+(\\[\\d+\\]){2,}');
 
@@ -550,16 +551,25 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
         if (!palavras.map(p => p.toLowerCase()).includes("escreva") && !palavras.map(p => p.toLowerCase()).includes('escreval')) {
           this.types.forEach(type => {
-            if (palavras.map(p => p.toLowerCase()).includes(type)) {
+            // Não suporta matrizes
+            if (palavras.filter(i => i).map(p => p.toLowerCase()).includes(type)) {
               const typeIndex = palavras.map(p => p.toLowerCase()).indexOf(type);
+              const indexOfVarName = linha.trim().split(' ').map(p => p.toLowerCase()).indexOf('var');
+              let replacedLine = linha.trim().toLowerCase().replace('var', palavras[typeIndex]).replace('vetor', '').replace(/([0-9])+\.\./g, '').replace(/,/g, '$%@#').replace(/:/g, ' ').split(' ')
+              replacedLine.splice(typeIndex)
+              replacedLine = [...replacedLine.slice(0, indexOfVarName + 1), ' ', ...replacedLine.slice(indexOfVarName + 1)]
+              replacedLine = replacedLine.filter(function (i) {
+                return i;
+              });
+
               let replacedArrayVars = this.setVars(
-                linha.trim().toLowerCase().replace('var', '').replace(/,/g, '$%@#').replace(/:/g, ' ').split(' ').reverse(),
+                replacedLine.join('').split(' '),
                 0
               );
-
+              replacedArrayVars = [...replacedArrayVars.slice(0, 1), ' ', ...replacedArrayVars.slice(1)]
               palavras = palavras.map(p => p.toLowerCase()).join(' ').replace(/:/g, ' ').split(' ').reverse().map((value1, index) => {
                 if (replacedArrayVars[index] != '$%@#') {
-                  return replacedArrayVars[index];
+                  return replacedArrayVars[index] ?? ' ';
                 }
                 return value1 === ',' ? value1 : ';';  // verificar se essa aleração altera matrizes
               });
@@ -574,10 +584,13 @@ export class HomeComponent implements OnInit, AfterViewInit {
           const indexAte = palavras.map(p => p.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()).indexOf("ate");
           const indexPasso = palavras.map(p => p.toLowerCase()).indexOf("passo");
           const indexPara = palavras.map(p => p.toLowerCase()).indexOf("para");
+          const isNegative = Number(palavras[indexPasso + 1]) < 0;
           // presumindo que a primeira palavra após para será uma variavel
-          //palavras[indexDe] = palavras.map(p => p.toLowerCase())[indexDe] = "=";
           palavras[indexAte] = palavras.map(p => p.toLowerCase())[indexAte] = "; " + palavras[indexPara + 1] + " <= ";
-          palavras[indexPasso] = palavras.map(p => p.toLowerCase())[indexPasso] = "; " + palavras[indexPara + 1] + " += ";
+          palavras[indexPasso] = palavras.map(p => p.toLowerCase())[indexPasso] = "; " + palavras[indexPara + 1] + (isNegative ? ' -= ' : " += ");
+          if (isNegative) {
+            palavras[indexPasso + 1] = palavras[indexPasso + 1].replace('-', '')
+          }
         }
 
         if ((palavras.map(p => p.toLowerCase()).includes('escreva')) || palavras.map(p => p.toLowerCase()).includes('escreval')) {

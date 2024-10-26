@@ -70,7 +70,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   selectedPortugolType = PortugolType.PORTUGOL_STUDIO;
   protected readonly PORTUGOL_TYPE = PortugolType;
   private bracketsOpen: number = 0;
-  private isOutput: boolean = false;
 
   constructor(private activatedRoute: ActivatedRoute, private matDialog: MatDialog) {
     const routeSnapshot = this.activatedRoute.snapshot;
@@ -226,22 +225,17 @@ export class HomeComponent implements OnInit, AfterViewInit {
               });
             }
 
-            if (word.toLowerCase().includes('escreva') && (splitLine[j+1] !== '(' && splitLine[j+2] !== '(')){
-              this.text += word + ' ';
-              continue;
-            }else {
-              this.isOutput = true;
-            }
+            if (splitLine.map(s => s.toLowerCase()).includes('escreva') && (splitLine[j+1] !== '(' && splitLine[j+2] !== '(')){
+              console.warn('word', word)
+              this.text += word.replaceAll(',', '+') + ' ';
 
-            //Verificando se a palavra existe na lista de equivalencias
-            // @ts-ignore
-            if (this.PORTUGOL_EQUIVALENCE?.[word.toLowerCase()]) {
-              // @ts-ignore
-              this.text += this.PORTUGOL_EQUIVALENCE?.[word.toLowerCase()] + ' ';
             } else {
-              if (this.isOutput) {
-                this.text += word.replaceAll(',', '+') + ' ';
-              }else {
+              //Verificando se a palavra existe na lista de equivalencias
+              // @ts-ignore
+              if (this.PORTUGOL_EQUIVALENCE?.[word.toLowerCase()]) {
+                // @ts-ignore
+                this.text += this.PORTUGOL_EQUIVALENCE?.[word.toLowerCase()] + ' ';
+              } else {
                 this.text += word + ' ';
               }
             }
@@ -285,7 +279,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
                   this.text += ';\n\t';
                 }
               }
-              this.isOutput = false;
 
               //Removendo espaços desnecessários para deixar o código mais limpo
               this.text = this.text.replace(' ( ', '(');

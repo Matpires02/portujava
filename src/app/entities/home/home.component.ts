@@ -12,12 +12,14 @@ import {SatisfactionSurveyComponent} from "../satisfaction-survey/satisfaction-s
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit, AfterViewInit {
+  selectedPortugolType = PortugolType.PORTUGOL_STUDIO;
   protected text = 'import java.util.Scanner;\n';
   protected hiddenJavaPlugin: boolean = true;
   protected portugolForm = new FormControl<string>('', {
     nonNullable: true,
     validators: Validators.required,
   });
+  protected readonly PORTUGOL_TYPE = PortugolType;
   private types = ['inteiro', 'real', 'logico', 'cadeia', 'caractere', 'caracter'];
   private variaveis: Object = {};
   private codigoDeTeste =
@@ -67,8 +69,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
   ;
   private readonly PORTUGOL_EQUIVALENCE = equivalencePortugolStudio;
   private readonly VISUALG_EQUIVALENCE = equivalenceVisuAlg;
-  selectedPortugolType = PortugolType.PORTUGOL_STUDIO;
-  protected readonly PORTUGOL_TYPE = PortugolType;
   private bracketsOpen: number = 0;
 
   constructor(private activatedRoute: ActivatedRoute, private matDialog: MatDialog) {
@@ -144,6 +144,15 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
     link.click();
     URL.revokeObjectURL(link.href);
+  }
+
+  showSurvey() {
+    if (this.portugolForm.valid) {
+      setTimeout(() => {
+        this.matDialog.open(SatisfactionSurveyComponent);
+      }, 3000);
+    }
+
   }
 
   /**
@@ -225,7 +234,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
               });
             }
 
-            if (splitLine.map(s => s.toLowerCase()).includes('escreva') && (splitLine[j+1] !== '(' && splitLine[j+2] !== '(')){
+            if (splitLine.map(s => s.toLowerCase()).includes('escreva') && (splitLine[j + 1] !== '(' && splitLine[j + 2] !== '(')) {
               console.warn('word', word)
               this.text += word.replaceAll(',', '+') + ' ';
 
@@ -561,7 +570,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
         if (palavras.map(p => p.toLowerCase()).includes("para") && !palavras.map(p => p.toLowerCase()).includes("escreva") && !palavras.map(p => p.toLowerCase()).includes('escreval')) {
           //const indexDe= palavras.map(p => p.toLowerCase()).indexOf("de");
-            console.warn("n", palavras.map(p => p.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()))
+          console.warn("n", palavras.map(p => p.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()))
           const indexAte = palavras.map(p => p.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()).indexOf("ate");
           const indexPasso = palavras.map(p => p.toLowerCase()).indexOf("passo");
           const indexPara = palavras.map(p => p.toLowerCase()).indexOf("para");
@@ -591,7 +600,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
             break;
           }
 
-          if (palavra.toLowerCase() === 'escreva' && (palavras[j+1] !== '(' && palavras[j+2] !== '(')){
+          if (palavra.toLowerCase() === 'escreva' && (palavras[j + 1] !== '(' && palavras[j + 2] !== '(')) {
             this.text += palavra + ' ';
             continue;
           }
@@ -673,14 +682,5 @@ export class HomeComponent implements OnInit, AfterViewInit {
       this.hiddenJavaPlugin = false;
       this.addJsToElement();
     }
-  }
-
-  showSurvey() {
-    if (this.portugolForm.valid){
-      setTimeout(() => {
-        this.matDialog.open(SatisfactionSurveyComponent);
-      }, 3000);
-    }
-
   }
 }

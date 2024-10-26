@@ -186,7 +186,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         //Separando a linha por cada palavra
         let splitLine = spl.trim().split(' ');
         //Verificando se a palavra é um comando de entrada para fazer as sbstituições necessárias
-        if (splitLine.includes('leia') || splitLine.includes("LEIA") || splitLine.includes("Leia")) {
+        if (splitLine.map(s => s.toLowerCase()).includes('leia')) {
           const vars = Object.keys(this.variaveis);
           splitLine.forEach((word) => {
             let wordWithoutSpace = word.replace(' ', '').replace(/\t/g, '');
@@ -232,9 +232,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
             } else {
               //Verificando se a palavra existe na lista de equivalencias
               // @ts-ignore
-              if (this.PORTUGOL_EQUIVALENCE?.[word.toLowerCase()]) {
+              if (this.PORTUGOL_EQUIVALENCE?.[word.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()]) {
                 // @ts-ignore
-                this.text += this.PORTUGOL_EQUIVALENCE?.[word.toLowerCase()] + ' ';
+                this.text += this.PORTUGOL_EQUIVALENCE?.[word.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()] + ' ';
               } else {
                 this.text += word + ' ';
               }
@@ -438,9 +438,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
   private replaceWordsForVisuAlg() {
     let value: string | null = this.portugolForm.value;
     value = value.replace(/algoritmo *\n/g, 'algoritmo');
-    value = value.replace(/ +\(\) */g, '()');
-    value = value.replace('limpa()', '');
-    value = value.replace('<-', ' <- ');
+    value = value.replaceAll(/ +\(\) */g, '()');
+    value = value.replaceAll('limpa()', '');
+    value = value.replaceAll('limpatela', '');
+    value = value.replaceAll('<-', ' <- ');
 
     let linhas: string[] | undefined = value.split('\n');
     if (linhas != undefined) {
@@ -461,7 +462,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         let palavras = linha.trim().split(' ');
 
         // Verificando se alguumas das palavra é um comando de entrada
-        if (palavras.includes('leia') || palavras.includes("LEIA") || palavras.includes("Leia")) {
+        if (palavras.map(s => s.toLowerCase()).includes('leia')) {
           const vars = Object.keys(this.variaveis);
           palavras.forEach((word) => {
             let wordWithoutSpace = word.toLowerCase().replace(' ', '').replace(/\t/g, '');
@@ -560,7 +561,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
         if (palavras.map(p => p.toLowerCase()).includes("para") && !palavras.map(p => p.toLowerCase()).includes("escreva") && !palavras.map(p => p.toLowerCase()).includes('escreval')) {
           //const indexDe= palavras.map(p => p.toLowerCase()).indexOf("de");
-          const indexAte = palavras.map(p => p.toLowerCase()).indexOf("ate");
+            console.warn("n", palavras.map(p => p.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()))
+          const indexAte = palavras.map(p => p.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()).indexOf("ate");
           const indexPasso = palavras.map(p => p.toLowerCase()).indexOf("passo");
           const indexPara = palavras.map(p => p.toLowerCase()).indexOf("para");
           // presumindo que a primeira palavra após para será uma variavel
@@ -602,9 +604,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
           }
 
           // @ts-ignore
-          if (this.VISUALG_EQUIVALENCE?.[palavra.toLowerCase()] && !(palavras.map(p => p.toLowerCase()).includes('escreva') && palavra.toLowerCase() !== 'escreva' && (palavra.toLowerCase() === 'e' || this.VISUALG_EQUIVALENCE?.[palavra.toLowerCase()]))) {
+          if (this.VISUALG_EQUIVALENCE?.[palavra.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()] && !(palavras.map(p => p.toLowerCase()).includes('escreva') && palavra.toLowerCase() !== 'escreva' && (palavra.toLowerCase() === 'e' || this.VISUALG_EQUIVALENCE?.[palavra.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()]))) {
             // @ts-ignore
-            this.text += this.VISUALG_EQUIVALENCE[palavra.toLowerCase()] + '';
+            this.text += this.VISUALG_EQUIVALENCE[palavra.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()] + '';
           } else {
             this.text += palavra + ' ';
           }
@@ -616,12 +618,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
                 if (
                   linhas[i + 1] != '{' &&
                   (linhas[i].toLowerCase().includes('se') ||
-                    linhas[i].toLowerCase().includes('senao') ||
+                    linhas[i].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").includes('senao') ||
                     linhas[i].toLowerCase().includes('escolha') ||
                     linhas[i].toLowerCase().includes('caso') ||
                     linhas[i].toLowerCase().includes('enquanto') ||
                     linhas[i].toLowerCase().includes('para') ||
-                    linhas[i].toLowerCase().includes('faca'))
+                    linhas[i].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").includes('faca'))
                 ) {
                   this.text += '\n\t\t';
                 } else {
@@ -644,9 +646,9 @@ export class HomeComponent implements OnInit, AfterViewInit {
               } else {
                 if ((linha.toLowerCase().includes('escolha') || linha.toLowerCase().includes("caso")) && !linha.toLowerCase().includes('escreva')) {
                   this.text += '\n\t\t'
-                } else if ((linha.toLowerCase().includes('se') && linha.toLowerCase().includes('entao')) ||
+                } else if ((linha.toLowerCase().includes('se') && linha.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").includes('entao')) ||
                   linha.toLowerCase().includes('fimse') ||
-                  linha.toLowerCase().includes('senao') || linha.toLowerCase().includes('faca')) {
+                  linha.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").includes('senao') || linha.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").includes('faca')) {
                   this.text += linha.toLowerCase().includes('fimse') ? '\n\t' : '\n\t\t';
                 } else {
                   this.text += linha.toLowerCase().includes('fimenquanto') ? '\n\t' : ';\n\t';

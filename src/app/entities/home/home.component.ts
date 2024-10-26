@@ -257,12 +257,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
                   if (
                     val[i + 1] != '{' &&
                     (val[i].toLowerCase().includes('se') ||
-                      val[i].toLowerCase().includes('senao') ||
+                      val[i].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").includes('senao') ||
                       val[i].toLowerCase().includes('escolha') ||
                       val[i].toLowerCase().includes('caso') ||
                       val[i].toLowerCase().includes('enquanto') ||
                       val[i].toLowerCase().includes('para') ||
-                      val[i].toLowerCase().includes('faca'))
+                      val[i].toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").includes('faca'))
                   ) {
                     this.text += '\n\t\t';
                   } else {

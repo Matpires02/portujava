@@ -320,7 +320,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
    * @private
    */
   private setVars(splitLine: string[], startIndex: number) {
-    console.error(splitLine.slice())
     const arrayRegex = new RegExp('\\w+\\[(\\d)+\\]');
     const matrizRegex = new RegExp('\\w+(\\[\\d+\\]){2,}');
 
@@ -341,16 +340,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
             brackets = brackets.replace(new RegExp('\\d'), '');
           }
           // @ts-ignore
-          splitLine[i] =
-            newString +
-            ' ' +
-            brackets +
-            ' = new ' +
-            this.getJavaType(type) +
-            ' ' +
-            // @ts-ignore
-            splitLine[i].match(new RegExp('(\\[\\d+\\]){2,}'))[0] +
-            (splitLine[i].includes(',') ? ',' : '');
+          splitLine[i] = newString + ' ' + brackets + ' = new ' + this.getJavaType(type) + ' ' + splitLine[i].match(new RegExp('(\\[\\d+\\]){2,}'))[0] + (splitLine[i].includes(',') ? ',' : '');
           this.variaveis = {
             ...this.variaveis,
             [newString.replace(',', '')]: type.toLowerCase(),
@@ -633,7 +623,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
             this.text += palavra + ' ';
           }
 
-// Verificando se é a  ultima palavra da linha então adiciona-se o ponto caso seja a ultima palavra mas o caractere for um { ouu } somente cria-se uma nova linha
+          // Verificando se é a  ultima palavra da linha então adiciona-se o ponto caso seja a ultima palavra mas o caractere for um { ouu } somente cria-se uma nova linha
           if (j === palavras.length - 1) {
             if (palavra == '{' || palavra == '}') {
               if (linhas?.length - 1 != i) {

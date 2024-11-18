@@ -16,7 +16,7 @@ export const equivalencePortugolStudio = {
   senao: 'else',
   escolha: 'switch',
   caso: 'case',
-  pare: 'break',
+  pare: 'break;',
   enquanto: 'while',
   para: 'for',
   faca: 'do',
@@ -31,7 +31,9 @@ export const equivalenceVisuAlg = {
   real: 'double',
   logico: 'boolean',
   caractere: 'String',
+  caracter: 'String',
   escreva: 'System.out.println',
+  escreval: 'System.out.println',
   '<-': '=',
   '^': 'Math.pow', // TODO: potenciação não funciona
   RaizQ: 'Math.sqrt',
@@ -50,7 +52,8 @@ export const equivalenceVisuAlg = {
   enquanto: 'while (',
   faca: ') {',
   fimenquanto: '}',
-  para: 'for', // TODO: resolver como ser feito
+  para: 'for( ', // TODO: resolver como ser feito
+  fimpara: "}",
   repita: 'do {',
   ate: '} while(',
   interrompa: 'break',
@@ -61,5 +64,7 @@ export const equivalenceVisuAlg = {
   funcao: 'static',
   fimfuncao: '}',
   fim_algoritmo: '}',
-  fimescolha: '}'
+  fimalgoritmo: '}',
+  fimescolha: '}',
+  de: '= '
 };

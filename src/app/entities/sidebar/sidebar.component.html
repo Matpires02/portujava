@@ -27,19 +27,23 @@
         </li>
       </ul>
       <ul class="navbar-nav flex-row flex-wrap ms-md-auto">
+
+        <li class="nav-item mx-auto mx-lg-0">
+          <a class="nav-link select-colors">
+            <mat-icon matTooltip="Responda a uma pesquisa de satisfação" (click)="openSurvey()">poll</mat-icon>
+          </a>
+        </li>
         <li class="nav-item mx-auto mx-lg-0">
           <a
             (click)="
-            $event.preventDefault();
               changeMode(
-                modeSelected == 'dark_mode' ? 'light_mode' : 'dark_mode'
+                colorSchemeService.currentActive() === 'dark' ? 'light' : 'dark'
               )
             "
             class="select-colors nav-link"
-            href=""
           >
-            <mat-icon *ngIf="modeSelected == 'dark_mode'">dark_mode</mat-icon>
-            <mat-icon *ngIf="modeSelected == 'light_mode'">light_mode</mat-icon>
+            <mat-icon *ngIf="colorSchemeService.currentActive() === 'dark'">dark_mode</mat-icon>
+            <mat-icon *ngIf="colorSchemeService.currentActive() === 'light'">light_mode</mat-icon>
           </a>
         </li>
       </ul>

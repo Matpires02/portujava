@@ -13,13 +13,13 @@ Disponível no site: `https://portujava.vercel.app`
 
 ## ▶️ Como rodar
 
-# Acesse a pasta do frontend
-cd portujava/frontend
+### Clone o repositório
+git clone https://github.com/Matpires02/portujava.git
 
-# Instale as dependências
+### Instale as dependências
 npm install
 
-# Execute o projeto
+### Execute o projeto
 ng serve
 
 📍 O frontend estará disponível em:
